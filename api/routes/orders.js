@@ -12,8 +12,17 @@ router.get("/", (req, res) => {
 
 //장바구니 등록하기
 router.post("/", (req, res) => {
+
+    const order ={
+        name : req.body.productName,
+        qty : req.body.qty
+    };
+
+
     res.json({
-        message : "successful add"
+    
+        message : "successful add",
+        orderInfo : order
     });
 });
 
