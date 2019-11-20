@@ -5,7 +5,7 @@ const router = express.Router();
 const productModel = require("../models/products");
 
 
-// 데이터 불러오기(products)
+// 전체 데이터 불러오기(products)
 router.get("/", (req, res) => {
 
     productModel
@@ -28,6 +28,40 @@ router.get("/", (req, res) => {
     //     msg : "successful product get"
     // });
 });
+
+// 디테일 데이터 불러오기
+router.get("/:productID", (req, res) => {
+
+    productModel
+        .findById(req.params.productID)
+        .exec()
+        .then(result => {
+            console.log(result);
+            if(result){
+                // result가 있을경우 (일치하는 DB가 있을경우)
+                res.json({
+                    msg : "successful product data",
+                    productInfo : result
+                });
+                
+            } else {
+                // result가 없을경우
+                res.json({
+                    msg : "No productID"
+                });
+            }
+        })  
+        .catch(err => {
+            res.json({
+                msg : err.message
+            });
+        });
+
+
+
+});
+
+
 
 
 // 데이터 등록하기 (product)
