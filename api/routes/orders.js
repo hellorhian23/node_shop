@@ -4,6 +4,8 @@ const router = express.Router();
 
 const orderModel = require("../models/orders");
 
+const productModel = require("../models/products");
+
 //장바구니 불러오기
 router.get("/", (req, res) => {
    
@@ -33,36 +35,46 @@ router.get("/", (req, res) => {
 //장바구니 등록하기
 router.post("/", (req, res) => {
 
-    const order = new orderModel({
-        product : req.body.product_ID,
-        qty : req.body.qty
-    });
 
-    order
-        .save()
-        .then(result => {
-            res.json({
-                message : "successful order stored",
-                orderInfo : result
-            });
+    productModel
+        .findById({_id: req.body.product_ID})
+        .exec()
+        .then(product => {
+            if(!product){
+                res.json({
+                    message : "No product ID"
+                });
+
+            } else {
+                const order = new orderModel({
+                    product : req.body.product_ID,
+                    qty : req.body.qty
+                });
+            
+                order
+                    .save()
+                    .then(result => {
+                        res.json({
+                            message : "successful order stored",
+                            orderInfo : result
+                        });
+                    })
+                    .catch(err => {
+                        res.json({
+                            message : err.message
+                        });
+                    });
+            
+            }
         })
-        .catch(err => {
+        .catch(err =>{
             res.json({
                 message : err.message
             });
         });
 
-    // const order ={
-    //     name : req.body.productName,
-    //     qty : req.body.qty
-    // };
 
-
-    // res.json({
     
-    //     message : "successful add",
-    //     orderInfo : order
-    // });
 });
 
 //장바구니 삭제하기
