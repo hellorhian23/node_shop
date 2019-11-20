@@ -112,10 +112,23 @@ router.patch("/", (req, res) => {
 
 
 //데이터 삭제하기 (product)
-router.delete("/", (req, res) => {
-    res.json({
-        message : "successful product delete"
-    });
+router.delete("/:productID", (req, res) => {
+    // res.json({
+    //     message : "successful product delete"
+    // });
+    productModel
+        .remove({_id: req.params.productID})
+        .exec()
+        .then(result => {
+            res.json({
+                message : "deleted product"
+            });
+        })
+        .catch(err => {
+            res.json({
+                msg : err.message
+            });
+        });
 });
 
 
